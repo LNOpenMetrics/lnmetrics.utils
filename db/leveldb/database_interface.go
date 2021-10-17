@@ -2,7 +2,9 @@ package db
 
 import (
 	"fmt"
+
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/syndtr/goleveldb/leveldb/iterator"
 
 	log "github.com/OpenLNMetrics/lnmetrics.utils/log"
 )
@@ -51,3 +53,22 @@ func (this *database) DeleteValue(key string) error {
 }
 
 // TODO Add method to iterate over a method.
+
+// Take as result the raw iterator to iterate over the database content
+// The user need to take kare of the Release at the end of the usage
+func (this *database) GetRawIterator() iterator.Iterator {
+	return this.instance.NewIterator(nil, nil)
+}
+
+// Take as result the list of keys that are in the stored in the database
+func (this *database) ListOfKeys() ([]*string, error) {
+	iter := this.GetRawIterator()
+	defer iter.Release()
+	keys := make([]*string, 0)
+	for iter.Next() {
+		key := string(iter.Key())
+		keys = append(keys, &key)
+	}
+	err := iter.Error()
+	return keys, err
+}
