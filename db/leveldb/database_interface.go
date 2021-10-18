@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/iterator"
@@ -11,6 +12,7 @@ import (
 
 type database struct {
 	instance *leveldb.DB
+	pathDb   *string
 }
 
 var instance database
@@ -32,6 +34,7 @@ func (this *database) InitDB(homedir string) error {
 	}
 	log.GetInstance().Info("Created and Connected to the database at " + path)
 	this.instance = db
+	this.pathDb = &path
 	return nil
 }
 
@@ -71,4 +74,21 @@ func (this *database) ListOfKeys() ([]*string, error) {
 	}
 	err := iter.Error()
 	return keys, err
+}
+
+// Close connection with the database
+func (this *database) CloseDatabase() error {
+	return this.instance.Close()
+}
+
+// Erase the root of the database
+func (this *database) EraseDatabase() error {
+	return os.RemoveAll(*this.pathDb)
+}
+
+func (this *database) EraseAfterCloseDatabse() error {
+	if err := this.CloseDatabase(); err != nil {
+		return err
+	}
+	return this.EraseDatabase()
 }
