@@ -16,7 +16,7 @@ type singleton struct {
 var instance singleton
 
 func init() {
-
+	_ = InitLogger("", "debug", false)
 }
 
 func GetInstance() *singleton {
