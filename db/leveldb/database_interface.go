@@ -1,13 +1,10 @@
 package db
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/iterator"
-
-	log "github.com/OpenLNMetrics/lnmetrics.utils/log"
 )
 
 type database struct {
@@ -29,10 +26,8 @@ func (this *database) InitDB(homedir string) error {
 	path := homedir + "/db"
 	db, err := leveldb.OpenFile(path, nil)
 	if err != nil {
-		log.GetInstance().Error(err)
 		return err
 	}
-	log.GetInstance().Info("Created and Connected to the database at " + path)
 	this.instance = db
 	this.pathDb = &path
 	return nil
@@ -45,7 +40,6 @@ func (this *database) PutValue(key string, value string) error {
 func (this *database) GetValue(key string) (string, error) {
 	value, err := this.instance.Get([]byte(key), nil)
 	if err != nil {
-		log.GetInstance().Error(fmt.Sprintf("%s", err))
 		return "", err
 	}
 	return string(value), nil
