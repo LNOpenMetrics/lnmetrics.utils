@@ -1,4 +1,4 @@
-module github.com/OpenLNMetrics/lnmetrics.utils
+module github.com/LNOpenMetrics/lnmetrics.utils
 
 go 1.15
 
