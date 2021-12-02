@@ -27,12 +27,24 @@ func (this *singleton) Debug(message interface{}) {
 	instance.Log.Debug(message)
 }
 
+func (this *singleton) Debugf(message string, args ...interface{}) {
+	this.Debug(fmt.Sprintf(message, args...))
+}
+
 func (this *singleton) Info(message interface{}) {
 	instance.Log.Info(message)
 }
 
+func (this *singleton) Infof(message string, args ...interface{}) {
+	this.Info(fmt.Sprintf(message, args...))
+}
+
 func (this *singleton) Error(message interface{}) {
 	instance.Log.Error(message)
+}
+
+func (this *singleton) Errorf(message string, args ...interface{}) {
+	this.Error(fmt.Sprintf(message, args...))
 }
 
 func parseLogLevel(logLevel string) (logrus.Level, error) {
