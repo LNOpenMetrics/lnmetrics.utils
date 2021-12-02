@@ -5,6 +5,7 @@ import (
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/iterator"
+	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
 type database struct {
@@ -33,23 +34,62 @@ func (this *database) InitDB(homedir string) error {
 	return nil
 }
 
+// Put a string value in the db with the specified key
 func (this *database) PutValue(key string, value string) error {
-	return this.instance.Put([]byte(key), []byte(value), nil)
+	return this.PutValueInBytes(key, []byte(value))
 }
 
+// Put a value defined in bytes in the db with the specified key
+func (this *database) PutValueInBytes(key string, value []byte) error {
+	return this.instance.Put([]byte(key), value, nil)
+}
+
+// Get a value as string with the specified key, or return a not nil error
+// in case of error.
 func (this *database) GetValue(key string) (string, error) {
-	value, err := this.instance.Get([]byte(key), nil)
+	value, err := this.GetValueInBytes(key)
 	if err != nil {
 		return "", err
 	}
 	return string(value), nil
 }
 
+// Get a value as bytes with the specified key, or return a not nil error.
+func (this *database) GetValueInBytes(key string) ([]byte, error) {
+	value, err := this.instance.Get([]byte(key), nil)
+	if err != nil {
+		return nil, err
+	}
+	return value, nil
+}
+
+// Delete value with the specified key
 func (this *database) DeleteValue(key string) error {
 	return this.instance.Delete([]byte(key), nil)
 }
 
-// TODO Add method to iterate over a method.
+// Iterate through the index from startKey included to endKey not included, and execute the callback defined from the user.
+func (this *database) IterateThrough(startKey string, endKey string, callback func(string) error) error {
+	iter := this.instance.NewIterator(&util.Range{Start: []byte(startKey), Limit: []byte(endKey)}, nil)
+	for iter.Next() {
+		if err := callback(string(iter.Value())); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Iterate through the index from startKey, and run the callback specified by the user,
+// a not nil value is returned if any error occurs.
+func (this *database) IterateFrom(startKey string, callback func(string) error) error {
+	iter := this.instance.NewIterator(util.BytesPrefix([]byte(startKey)), nil)
+	for iter.Next() {
+		if err := callback(string(iter.Value())); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 // Take as result the raw iterator to iterate over the database content
 // The user need to take kare of the Release at the end of the usage
@@ -80,6 +120,7 @@ func (this *database) EraseDatabase() error {
 	return os.RemoveAll(*this.pathDb)
 }
 
+// Close and erase the database
 func (this *database) EraseAfterCloseDatabse() error {
 	if err := this.CloseDatabase(); err != nil {
 		return err
