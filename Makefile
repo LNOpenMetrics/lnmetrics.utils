@@ -16,3 +16,6 @@ lint:
 
 check:
 	$(CC) test -v ./...
+
+doc:
+	$(CC) doc .
