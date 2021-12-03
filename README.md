@@ -14,8 +14,8 @@
    <a href="https://discord.gg/vFX989za">
     <img alt="Discord" src="https://img.shields.io/discord/913794833498394634?style=flat-square">
    </a>
-   <a href="https://pkg.go.dev/github.com/LNOpenMetrics/go-lnmetrics.reporter">
-     <img src="https://pkg.go.dev/badge/github.com/LNOpenMetrics/go-lnmetrics.reporter.svg" alt="Go Reference"/>
+   <a href="https://pkg.go.dev/github.com/LNOpenMetrics/lnmetrics.utils">
+    <img src="https://pkg.go.dev/badge/github.com/LNOpenMetrics/lnmetrics.utils.svg" alt="Go Reference">
    </a> 
   </p>
 </div>
