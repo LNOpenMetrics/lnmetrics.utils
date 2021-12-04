@@ -3,6 +3,7 @@
 package utime
 
 import (
+	"math"
 	"time"
 )
 
@@ -45,4 +46,11 @@ func InRangeFromUnix(target int64, start int64, offset time.Duration) bool {
 func InRangeMonthsUnix(target int64, start int64, months int64) bool {
 	end := time.Unix(start, 0).Add(time.Duration(months) * Month)
 	return target >= start && target <= end.Unix()
+}
+
+// Convert decimal unix timestamp in a int64 unix timestamp
+func FromDecimalUnix(decimalUnix float64) int64 {
+	// Source: https://stackoverflow.com/a/37628278/10854225
+	sec, dec := math.Modf(decimalUnix)
+	return time.Unix(int64(sec), int64(dec*(1e9))).Unix()
 }
