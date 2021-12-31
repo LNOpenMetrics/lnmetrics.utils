@@ -49,3 +49,25 @@ func TestSameInRangeMonthsUnixTwo(t *testing.T) {
 		t.Errorf("The two dates are inside the range of 1 month, them should be outside of this range")
 	}
 }
+
+func TestCountOccurenceInOneHour(t *testing.T) {
+	start := time.Now().Unix()
+	end := time.Now().Add(1 * time.Hour).Unix()
+
+	occur := OccurenceInUnixRange(start, end, 30*time.Minute)
+
+	if occur != 2 {
+		t.Errorf("Expected 2 by received %d", occur)
+	}
+}
+
+func TestCountOccurenceInOneDay(t *testing.T) {
+	start := time.Now().Unix()
+	end := time.Now().Add(24 * time.Hour).Unix()
+
+	occur := OccurenceInUnixRange(start, end, 30*time.Minute)
+
+	if occur != 2*24 {
+		t.Errorf("Expected %d but received %d", 2*24, occur)
+	}
+}
