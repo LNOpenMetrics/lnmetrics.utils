@@ -54,3 +54,19 @@ func FromDecimalUnix(decimalUnix float64) int64 {
 	sec, dec := math.Modf(decimalUnix)
 	return time.Unix(int64(sec), int64(dec*(1e9))).Unix()
 }
+
+// Count the number of occurrence that are inside the following
+func OccurenceInUnixRange(from int64, to int64, step time.Duration) uint64 {
+	count := uint64(0)
+	actual := from
+	for actual < to {
+		actual = increaseTimestampByDuration(actual, step)
+		count++
+	}
+	return count
+}
+
+func increaseTimestampByDuration(timestamp int64, duration time.Duration) int64 {
+	actualTime := time.Unix(timestamp, 0).Add(duration)
+	return actualTime.Unix()
+}
