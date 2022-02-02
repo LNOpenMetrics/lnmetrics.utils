@@ -66,7 +66,24 @@ func OccurenceInUnixRange(from int64, to int64, step time.Duration) uint64 {
 	return count
 }
 
+// Add a specified duration to the timestamp provided.
+func AddToTimestamp(timestamp int64, duration time.Duration) int64 {
+	return increaseTimestampByDuration(timestamp, duration)
+}
+
+// Subtract a specified duration to the timestamp provided.
+func SubToTimestamp(timestamp int64, duration time.Duration) int64 {
+	return decreaseTimestampByDuration(timestamp, duration)
+}
+
+// Increase the timestamp received by a specified duration.
 func increaseTimestampByDuration(timestamp int64, duration time.Duration) int64 {
 	actualTime := time.Unix(timestamp, 0).Add(duration)
+	return actualTime.Unix()
+}
+
+// Decrease the timestamp provided by the specified duration.
+func decreaseTimestampByDuration(timestamp int64, duration time.Duration) int64 {
+	actualTime := time.Unix(timestamp, 0).Add(time.Duration(-duration))
 	return actualTime.Unix()
 }

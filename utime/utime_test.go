@@ -71,3 +71,25 @@ func TestCountOccurenceInOneDay(t *testing.T) {
 		t.Errorf("Expected %d but received %d", 2*24, occur)
 	}
 }
+
+func TestSubtractDay(t *testing.T) {
+	target := time.Now().Unix()
+	targetDay := time.Now().Day()
+
+	yesterday := SubToTimestamp(target, 1*24*time.Hour)
+	yesterdayDay := time.Unix(yesterday, 0).Day()
+	if targetDay-1 != yesterdayDay {
+		t.Errorf("The target day %d is different from the day calculated %d", targetDay, yesterdayDay)
+	}
+}
+
+func TestSubtractMinute(t *testing.T) {
+	target := time.Now().Unix()
+	targetDay := time.Now().Day()
+
+	yesterday := SubToTimestamp(target, 24*time.Minute)
+	yesterdayDay := time.Unix(yesterday, 0).Day()
+	if targetDay != yesterdayDay {
+		t.Errorf("The target day %d is different from the day calculated %d", targetDay, yesterdayDay)
+	}
+}
