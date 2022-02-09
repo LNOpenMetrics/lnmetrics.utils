@@ -17,5 +17,8 @@ lint:
 check:
 	$(CC) test -v ./...
 
+check-full:
+	richgo test ./... -v
+
 doc:
 	$(CC) doc .
