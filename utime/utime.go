@@ -36,13 +36,19 @@ func SameYearUnix(first int64, second int64) bool {
 	return firstTime.Year() == secondTime.Year()
 }
 
-// Return true if the unix timestamp it is inside a range of
-// [second, range] or [range, second]
+// Return true if the UNIX timestamp it is inside a range [start, start + duration]
+// target: The timestamp that where we want make the check.
+// start: The starting point in UNIX time where we want perform the check.
+// offset: The time duration of the period expressed in time.Duration type.
 func InRangeFromUnix(target int64, start int64, offset time.Duration) bool {
 	end := time.Unix(start, 0).Add(offset)
 	return target >= start && target <= end.Unix()
 }
 
+// Return true if the UNIX timestamp it is inside a range [start, start + months]
+// target: The timestamp that where we want make the check.
+// start: The starting point in UNIX time where we want perform the check.
+// offset: The time duration of the period expressed in time.Duration type.
 func InRangeMonthsUnix(target int64, start int64, months int64) bool {
 	end := time.Unix(start, 0).Add(time.Duration(months) * Month)
 	return target >= start && target <= end.Unix()
