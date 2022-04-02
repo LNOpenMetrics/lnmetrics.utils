@@ -1,2 +1,4 @@
 **/vendor
 db/leveldb/db/
+
+.idea/
