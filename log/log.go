@@ -16,7 +16,7 @@ type singleton struct {
 var instance singleton
 
 func init() {
-	_ = InitLogger("", "debug", false)
+	_ = InitLogger("", "debug", true)
 }
 
 func GetInstance() *singleton {
@@ -76,9 +76,12 @@ func InitLogger(customPath string, level string, callerTrace bool) error {
 	}
 
 	instance.Log = logrus.New()
-	// TODO report this error
-	logLevel, _ := parseLogLevel(level)
+	logLevel, err := parseLogLevel(level)
+	if err != nil {
+		return err
+	}
 	instance.Log.SetLevel(logLevel)
+	instance.Log.SetReportCaller(callerTrace)
 
 	if callerTrace {
 		instance.Log.SetReportCaller(true)
