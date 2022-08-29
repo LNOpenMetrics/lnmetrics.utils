@@ -1,3 +1,9 @@
+# v0.0.9
+
+## Fixed
+- improve error handling ([commit](https://github.com/LNOpenMetrics/lnmetrics.utils/commit/3c0437990af5470ebc0e62e503009a277c304343)). @vincenzopalazzo 29-08-2022
+
+
 # v0.0.8
 
 ## Added
