@@ -34,12 +34,12 @@ func (self *LNSigner) SignMsg(msg *string) (*string, error) {
 func (self *LNSigner) VerifyMsg(key *string, signature *string, msg *string) (bool, error) {
 	u8sing, err := self.encoder.DecodeString(*signature)
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 
 	// https://github.com/ElementsProject/lightning/blob/master/lightningd/signmessage.c#L177
 	if len(u8sing) != 65 {
-		return false, goutils.Errf("zbase is too is wrong size %d, need to be exactly 65", len(u8sing))
+		return false, goutils.Errf("zbase with wrong size %d, need to be exactly 65", len(u8sing))
 	}
 
 	// The signature is over the double-sha256 hash of the message.
@@ -52,5 +52,5 @@ func (self *LNSigner) VerifyMsg(key *string, signature *string, msg *string) (bo
 		return false, nil
 	}
 	pubKeyHex := hex.EncodeToString(pubKey.SerializeCompressed())
-	return pubKeyHex == *key, goutils.NotImplementYet()
+	return pubKeyHex == *key, nil
 }
