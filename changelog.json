@@ -1,0 +1,16 @@
+{
+  "package_name": "lnmetrics.utils",
+  "version": "v0.0.7",
+  "api": {
+    "name": "github",
+    "repository": "LNOpenMetrics/lnmetrics.utils",
+    "branch": "main"
+  },
+  "generation_method": {
+    "name": "semver-v2",
+    "header_filter": false
+  },
+  "serialization_method": {
+    "name": "md"
+  }
+}
