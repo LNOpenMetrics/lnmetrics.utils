@@ -22,3 +22,7 @@ check-full:
 
 doc:
 	$(CC) doc .
+
+dep:
+	$(CC) mod tidy
+	$(CC) mod vendor
