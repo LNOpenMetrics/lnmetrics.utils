@@ -16,7 +16,8 @@ func TestLNSignerVerifyMsgTrue(t *testing.T) {
 	zbase32 := "d7m5xma1tia1hw6mjkeixqoocexiyoyn1jgm53mncszdeut5j9r1k1nq7wsrh3pkk3c3xp7mkuuxmbneitu3us36cqfn9a6sdu3wa45j"
 	msg := "Testing go utils"
 	signer := NewLNSigner()
-	verified, _ := signer.VerifyMsg(&pubKey, &zbase32, &msg)
+	verified, err := signer.VerifyMsg(&pubKey, &zbase32, &msg)
+	assert.Nil(t, err)
 	assert.Equal(t, true, verified, "Return level returned it is diffirent")
 }
 
@@ -25,6 +26,7 @@ func TestLNSignerVerifyMsgFalse(t *testing.T) {
 	zbase32 := "d7m5xma1tia1hw6mjkeixqoocexiyoyn1jgm53mncszdeut5j9r1k1nq7wsrh3pkk3c3xp7mkuuxmbneitu3us36cqfn9a6sdu3wa45j"
 	msg := "Invalid message"
 	signer := NewLNSigner()
-	verified, _ := signer.VerifyMsg(&pubKey, &zbase32, &msg)
+	verified, err := signer.VerifyMsg(&pubKey, &zbase32, &msg)
+	assert.Nil(t, err)
 	assert.Equal(t, false, verified, "Return level returned it is diffirent")
 }
