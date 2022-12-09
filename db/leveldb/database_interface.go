@@ -8,22 +8,35 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
-type database struct {
+type Database struct {
 	instance *leveldb.DB
 	pathDb   *string
 }
 
-var instance database
+var instance Database
 
-func GetInstance() *database {
+// Deprecated: The db implementation was designed to be a Singleton
+// However, this need to be a client rules, so we need to
+// give the possibility to build an instance with `NewInstance` method
+// and if the client want to use the Singleton pattern it need to
+// implement the pattern.
+func GetInstance() *Database {
 	return &instance
 }
 
-func (this *database) Ready() bool {
+func NewInstance(homeDir string) (*Database, error) {
+	instance := Database{}
+	if err := instance.InitDB(homeDir); err != nil {
+		return nil, err
+	}
+	return &instance, nil
+}
+
+func (this *Database) Ready() bool {
 	return this.instance != nil
 }
 
-func (this *database) InitDB(homedir string) error {
+func (this *Database) InitDB(homedir string) error {
 	path := homedir + "/db"
 	db, err := leveldb.OpenFile(path, nil)
 	if err != nil {
@@ -35,18 +48,18 @@ func (this *database) InitDB(homedir string) error {
 }
 
 // Put a string value in the db with the specified key
-func (this *database) PutValue(key string, value string) error {
+func (this *Database) PutValue(key string, value string) error {
 	return this.PutValueInBytes(key, []byte(value))
 }
 
 // Put a value defined in bytes in the db with the specified key
-func (this *database) PutValueInBytes(key string, value []byte) error {
+func (this *Database) PutValueInBytes(key string, value []byte) error {
 	return this.instance.Put([]byte(key), value, nil)
 }
 
 // Get a value as string with the specified key, or return a not nil error
 // in case of error.
-func (this *database) GetValue(key string) (string, error) {
+func (this *Database) GetValue(key string) (string, error) {
 	value, err := this.GetValueInBytes(key)
 	if err != nil {
 		return "", err
@@ -55,7 +68,7 @@ func (this *database) GetValue(key string) (string, error) {
 }
 
 // Get a value as bytes with the specified key, or return a not nil error.
-func (this *database) GetValueInBytes(key string) ([]byte, error) {
+func (this *Database) GetValueInBytes(key string) ([]byte, error) {
 	value, err := this.instance.Get([]byte(key), nil)
 	if err != nil {
 		return nil, err
@@ -64,12 +77,12 @@ func (this *database) GetValueInBytes(key string) ([]byte, error) {
 }
 
 // Delete value with the specified key
-func (this *database) DeleteValue(key string) error {
+func (this *Database) DeleteValue(key string) error {
 	return this.instance.Delete([]byte(key), nil)
 }
 
 // Iterate through the index from startKey included to endKey not included, and execute the callback defined from the user.
-func (this *database) IterateThrough(startKey string, endKey string, callback func(string) error) error {
+func (this *Database) IterateThrough(startKey string, endKey string, callback func(string) error) error {
 	iter := this.instance.NewIterator(&util.Range{Start: []byte(startKey), Limit: []byte(endKey)}, nil)
 	for iter.Next() {
 		if err := callback(string(iter.Value())); err != nil {
@@ -81,7 +94,7 @@ func (this *database) IterateThrough(startKey string, endKey string, callback fu
 
 // Iterate through the index from startKey, and run the callback specified by the user,
 // a not nil value is returned if any error occurs.
-func (this *database) IterateFrom(startKey string, callback func(string) error) error {
+func (this *Database) IterateFrom(startKey string, callback func(string) error) error {
 	iter := this.instance.NewIterator(util.BytesPrefix([]byte(startKey)), nil)
 	for iter.Next() {
 		if err := callback(string(iter.Value())); err != nil {
@@ -93,12 +106,12 @@ func (this *database) IterateFrom(startKey string, callback func(string) error) 
 
 // Take as result the raw iterator to iterate over the database content
 // The user need to take kare of the Release at the end of the usage
-func (this *database) GetRawIterator() iterator.Iterator {
+func (this *Database) GetRawIterator() iterator.Iterator {
 	return this.instance.NewIterator(nil, nil)
 }
 
 // Take as result the list of keys that are in the stored in the database
-func (this *database) ListOfKeys() ([]*string, error) {
+func (this *Database) ListOfKeys() ([]*string, error) {
 	iter := this.GetRawIterator()
 	defer iter.Release()
 	keys := make([]*string, 0)
@@ -111,17 +124,17 @@ func (this *database) ListOfKeys() ([]*string, error) {
 }
 
 // Close connection with the database
-func (this *database) CloseDatabase() error {
+func (this *Database) CloseDatabase() error {
 	return this.instance.Close()
 }
 
 // Erase the root of the database
-func (this *database) EraseDatabase() error {
+func (this *Database) EraseDatabase() error {
 	return os.RemoveAll(*this.pathDb)
 }
 
 // Close and erase the database
-func (this *database) EraseAfterCloseDatabse() error {
+func (this *Database) EraseAfterCloseDatabse() error {
 	if err := this.CloseDatabase(); err != nil {
 		return err
 	}
