@@ -1,3 +1,12 @@
+# v0.1.0
+
+## Fixed
+- improve error handling ([commit](https://github.com/LNOpenMetrics/lnmetrics.utils/commit/1cf9c972b480c975147700e6a58e0544f77d34bb)). @vincenzopalazzo 09-12-2022
+
+## Added
+- deprecate the db singleton and allow to create instance ([commit](https://github.com/LNOpenMetrics/lnmetrics.utils/commit/654a6b0ea14a9f25ff9c26d8832768a34a7859fa)). @vincenzopalazzo 09-12-2022
+
+
 # v0.0.9
 
 ## Fixed
