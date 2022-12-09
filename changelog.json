@@ -1,6 +1,6 @@
 {
   "package_name": "lnmetrics.utils",
-  "version": "v0.0.9",
+  "version": "v0.1.0",
   "api": {
     "name": "github",
     "repository": "LNOpenMetrics/lnmetrics.utils",
